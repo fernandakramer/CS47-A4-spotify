@@ -5,12 +5,21 @@ import { myTopTracks, albumTracks } from "./utils/apiOptions";
 import { REDIRECT_URI, SCOPES, CLIENT_ID, ALBUM_ID } from "./utils/constants";
 import Colors from './Themes/colors';
 import millisToMinutesAndSeconds from './utils/millisToMinuteSeconds';
+import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import ScreenOne from './components/ScreenOne';
+import ScreenTwo from './components/ScreenTwo';
 
 // Endpoints for authorizing with Spotify
 const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
   tokenEndpoint: "https://accounts.spotify.com/api/token"
 };
+
+const Stack = createStackNavigator();
+
 
 export default function App() {
   const [token, setToken] = useState("");
@@ -81,22 +90,32 @@ export default function App() {
       url={item.album.images[0].url}
       song_title={item.name}
       album_name={item.album.name}
-      duration={item.duration_ms} />
+      duration={item.duration_ms}
+      song_screen={item.external_urls.spotify}
+      sound_preview={item.preview_url}/>
   )};
 
-  function AlbumTracks({track_number, artist, url, song_title, album_name, duration}) {
+  function AlbumTracks({artist, url, song_title, album_name, duration, sound_preview, song_screen}) {
+    const navigation = useNavigation();
+    console.log(sound_preview);
+    console.log(song_screen);
     return (
-      <View style={styles.item}>
-        <View style={styles.index_box}>
-          <Text style={styles.index_text}>{track_number}</Text>
-        </View>
+    <View style={styles.item}>
+      <View style={styles.index_box}>
+        <Pressable 
+          onPress={() => navigation.navigate('ScreenOne', {paramName: sound_preview})}> 
+          <Ionicons name="play-circle" size={30} color="green" />
+        </Pressable>
+      </View>
         <Image style={styles.album_box}
             source={{
               uri: url
             }}/>
         <View style={styles.song_title_artist}>
-          <Text numberOfLines={1} style={styles.bold_text}>{song_title}</Text>
-          <Text style={styles.artist_text}>{artist}</Text>
+          <Pressable onPress={() => navigation.navigate('ScreenTwo', {paramName: song_screen})}>
+            <Text numberOfLines={1} style={styles.bold_text}>{song_title}</Text>
+            <Text style={styles.artist_text}>{artist}</Text>
+          </Pressable>
         </View>
         <View style={styles.album_title_box}>
           <Text style={styles.bold_text}>{album_name}</Text>
@@ -104,15 +123,30 @@ export default function App() {
         <View style={styles.duration_box}>
           <Text style={styles.bold_text}>{millisToMinutesAndSeconds(duration)}</Text>
         </View>
-      </View>
+    </View>
+
+    );
+  }
+
+  function Home() {
+    return (
+      <SafeAreaView style={styles.container}>
+        {contentDisplayed}
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {contentDisplayed}
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="ScreenOne" component={ScreenOne} />
+        <Stack.Screen name="ScreenTwo" component={ScreenTwo} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
+
+
 }
 
 
@@ -179,6 +213,7 @@ const styles = StyleSheet.create({
     maxWidth: '10%',
     alignSelf: 'center',
     marginHorizontal: 5,
+    alignItems: 'center'
   },
   index_text: {
     fontSize: 12,
