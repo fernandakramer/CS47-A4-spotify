@@ -7,10 +7,8 @@ export default function ScreenTwo({ navigation, route}) {
     const params = route.params;
     console.log(params.paramName);
     return (
-      <View style={styles.screenOne}>
-            <WebView
-                source={{uri: params.paramName}}/>
-      </View>
+        <WebView
+            source={{uri: params.paramName}}/>
     );
   }
 

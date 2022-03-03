@@ -103,8 +103,8 @@ export default function App() {
     <View style={styles.item}>
       <View style={styles.index_box}>
         <Pressable 
-          onPress={() => navigation.navigate('ScreenOne', {paramName: sound_preview})}> 
-          <Ionicons name="play-circle" size={30} color="green" />
+          onPress={() => navigation.navigate('Song preview', {paramName: sound_preview})}> 
+          <Ionicons name="play-circle" size={25} color={Colors.spotify} />
         </Pressable>
       </View>
         <Image style={styles.album_box}
@@ -112,13 +112,13 @@ export default function App() {
               uri: url
             }}/>
         <View style={styles.song_title_artist}>
-          <Pressable onPress={() => navigation.navigate('ScreenTwo', {paramName: song_screen})}>
+          <Pressable onPress={() => navigation.navigate('Song details', {paramName: song_screen})}>
             <Text numberOfLines={1} style={styles.bold_text}>{song_title}</Text>
             <Text style={styles.artist_text}>{artist}</Text>
           </Pressable>
         </View>
         <View style={styles.album_title_box}>
-          <Text style={styles.bold_text}>{album_name}</Text>
+          <Text numberOfLines={2} style={styles.bold_text}>{album_name}</Text>
         </View>
         <View style={styles.duration_box}>
           <Text style={styles.bold_text}>{millisToMinutesAndSeconds(duration)}</Text>
@@ -139,9 +139,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="ScreenOne" component={ScreenOne} />
-        <Stack.Screen name="ScreenTwo" component={ScreenTwo} />
+        <Stack.Screen name="Home" component={Home} options={{headerShown: false}}/>
+        <Stack.Screen name="Song preview" component={ScreenOne} />
+        <Stack.Screen name="Song details" component={ScreenTwo} />
       </Stack.Navigator>
     </NavigationContainer>
   );
